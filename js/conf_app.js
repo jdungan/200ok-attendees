@@ -4,9 +4,11 @@ angular.module('_200OK', ['_200OK.controllers','_200OK.directives','ngResource']
 angular.module('_200OK.controllers',[])
     .controller('attendees', function($scope) {
         if (!$scope.attendees){
+            $scope.attendees = {};
             $scope.run_animation = false;
             $scope.unique_properties = ['all'];
             $scope.venue_latlng = [36.158619, -95.99220514297485];
+            
             $scope.map = L.mapbox.map('map_content', 'jdungan.map-rb58pj4k').setView($scope.venue_latlng,16);
 
             var distWatchID,
@@ -31,7 +33,11 @@ angular.module('_200OK.controllers',[])
                 var marker = e.layer,
                     feature = marker.feature,
                     popupContent =  '';
-
+                
+                if (!$scope.attendees[feature.properties.name]){
+                    $scope.attendees[feature.properties.name]=feature;
+                }
+                popupContent ='<popup name = "' + feature.properties.name +'" attendees = "attendees"></popup>'
                 for (var p in feature.properties){
                     if ($scope.unique_properties.indexOf(p) == -1){
                         if (!$scope.$$phase) {
@@ -40,9 +46,9 @@ angular.module('_200OK.controllers',[])
                             });
                         }
                     }
-                    popupContent += '<p><b>'+p+'</b>: '+feature.properties[p]+'</p>';
-                }
-
+                    // popupContent += '<b>'+p+'</b>: '+feature.properties[p]+'</br>';
+                };
+                // popupContent += '</popup>'
                 marker.setIcon(L.mapbox.marker.icon({
                     'marker-size' : 'medium',
                     'marker-color' : '#ee3924',
@@ -138,7 +144,7 @@ angular.module('_200OK.directives', [])
     .directive('popup', function(){
         return {
             restrict : 'E',
-            scope : {properites:'='},
+            scope : {name:'@',attendees:'='},
             templateUrl : 'widgets/popup.html'
         }
     });
