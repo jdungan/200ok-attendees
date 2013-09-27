@@ -37,7 +37,7 @@ angular.module('_200OK.controllers',[])
                 if (!$scope.attendees[feature.properties.name]){
                     $scope.attendees[feature.properties.name]=feature;
                 }
-                popupContent ='<popup name = "' + feature.properties.name +'" attendees = "attendees"></popup>'
+                popupContent ='<popup ng-model="attendees[feature.properties.name]" name = "' + feature.properties.name +'" attendees = "attendees"></popup>'
                 for (var p in feature.properties){
                     if ($scope.unique_properties.indexOf(p) == -1){
                         if (!$scope.$$phase) {
