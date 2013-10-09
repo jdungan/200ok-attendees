@@ -1,3 +1,8 @@
-<div>
-    <p>Hello: {{attendees[name].properties.name}}</p>
+<div >
+    <b>something:{{sic}}</b>
+    <div ng-repeat = '(prop,value) in profiles[name].properties | orderBy:prop' >
+        <p> 
+            <b>{{prop}}</b>:{{value}}
+        </p>
+    </div>
 </div>

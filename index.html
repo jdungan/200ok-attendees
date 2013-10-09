@@ -43,6 +43,8 @@
 </head>
 
 <body ng-controller='attendees'>
+    
+    
      <div id="mapPage"
           class="ui-page ui-body-b ui-header ui-bar-b ui-header-fixed"
           role="banner"
@@ -80,5 +82,33 @@
         </div>
 
      </div> <!-- end page -->
+
+     <div id='test'
+         class="ui-page"
+           role="banner"
+           data-role='page'
+           data-theme='b'>
+           <div data-role='content' class='ui-content' ng-ct>
+                <input ng-model='user'></input>
+                <span ng-bind='user'></span>
+                <div ng-show='user'>is here</div>
+                <p>First</p>
+                <div class='popup' name = '{{user}}' profiles='attendees'></div>
+                <p>Second</p>
+                <div id="second" class='popup' name = {{x}} profiles='attendees'></div>
+                <p>Third</p>
+                <button ng-click='add_directive($event)'>ADD</button>
+                <button ng-click='change_directive($event)'>Change</button>
+                <div id+'outer'>
+                    <div id='insert'></div>
+                </div>
+                </br></br></br></br>
+                <a href='#mapPage'>map</a>
+
+        </div>
+
+     </div>
+
+
 </body>
 </html>

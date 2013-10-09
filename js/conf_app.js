@@ -2,7 +2,7 @@
 angular.module('_200OK', ['_200OK.controllers','_200OK.directives','ngResource']);
 
 angular.module('_200OK.controllers',[])
-    .controller('attendees', function($scope) {
+    .controller('attendees', function($scope,$compile,$element) {
         if (!$scope.attendees){
             $scope.attendees = {};
             $scope.run_animation = false;
@@ -29,15 +29,20 @@ angular.module('_200OK.controllers',[])
             distWatchID = navigator.geolocation.watchPosition(new_position, appPosFail, posOptions);       
 
             $scope.attendee_markers = L.mapbox.markerLayer().addTo($scope.map);
+
+
+
             $scope.attendee_markers.on('layeradd', function(e) {
                 var marker = e.layer,
                     feature = marker.feature,
                     popupContent =  '';
                 
                 if (!$scope.attendees[feature.properties.name]){
-                    $scope.attendees[feature.properties.name]=feature;
+                    var n =feature.properties.name
+                    // .replace(/\s+/g,"")
+                    $scope.attendees[n]=feature;
                 }
-                popupContent ='<popup ng-model="attendees[feature.properties.name]" name = "' + feature.properties.name +'" attendees = "attendees"></popup>'
+                
                 for (var p in feature.properties){
                     if ($scope.unique_properties.indexOf(p) == -1){
                         if (!$scope.$$phase) {
@@ -46,18 +51,33 @@ angular.module('_200OK.controllers',[])
                             });
                         }
                     }
-                    // popupContent += '<b>'+p+'</b>: '+feature.properties[p]+'</br>';
                 };
-                // popupContent += '</popup>'
+
                 marker.setIcon(L.mapbox.marker.icon({
                     'marker-size' : 'medium',
                     'marker-color' : '#ee3924',
                     'marker-symbol' : 'rocket'
                 }));
+                
+                
 
-                marker.bindPopup(popupContent, {closeButton: false});
-
+                marker.bindPopup('Howdy');
+                
+                
+                marker.on('popupopen',function(e){
+                    var popup_div = $('div.leaflet-popup-content')   
+                        .attr('name',feature.properties.name)
+                        .attr( 'profiles','attendees')
+                        .addClass('popup');
+                        
+                    $compile(popup_div)($scope);
+                    
+                    $scope.$apply();
+                    e.popup._content = null;
+                    e.popup._update();
+                });
              });
+
 
             $scope.attendee_markers.loadURL('./attendees.json');
 
@@ -126,6 +146,30 @@ angular.module('_200OK.controllers',[])
                 $scope.attendee_markers.setFilter(function(marker){return true;});                
             }
         };
+        
+        $scope.add_directive = function(){
+            var popup_div=$('<div>')
+                .attr('name','LukeCrouch')
+                // .attr('sic','something')
+                .attr( 'profiles','attendees')
+                .addClass('popup');
+            $scope.sic="scoped sic";    
+            // var something_in_closure="wtf";
+            $('#insert').append(popup_div);
+            $compile(popup_div)($scope);
+        };
+
+        $scope.change_directive = function(){
+            var popup_div = $('<div>')   
+                .attr('name','Edward Cho')
+                .attr( 'profiles','attendees')
+                .addClass('popup'),
+            popup_el=$compile(popup_div)($scope);
+            
+            angular.element('#insert').append(popup_el);
+
+        };
+
 
     })
     .controller('twitter', function($scope,$resource) {
@@ -143,8 +187,11 @@ angular.module('_200OK.controllers',[])
 angular.module('_200OK.directives', [])
     .directive('popup', function(){
         return {
-            restrict : 'E',
-            scope : {name:'@',attendees:'='},
+            restrict : 'C',
+            scope : {name:'@',profiles:'='},
+            link:function(scope,element,attr){
+              scope.sic ="in link";
+            },
             templateUrl : 'widgets/popup.html'
         }
     });
