@@ -189,9 +189,6 @@ angular.module('_200OK.directives', [])
         return {
             restrict : 'C',
             scope : {name:'@',profiles:'='},
-            link:function(scope,element,attr){
-              scope.sic ="in link";
-            },
             templateUrl : 'widgets/popup.html'
         }
     });
